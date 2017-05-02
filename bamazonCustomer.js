@@ -25,35 +25,57 @@ connection.query("SELECT * FROM products", function(error, result) {
 
 var purchaseWithItemID = function() {
     console.log("Inside purchaseWithItemID ")
-    inquirer.prompt([{
+    connection.query("SELECT * FROM products"function(err, results) {
+        if (err) throw err;
 
-            name: "itemNeeded",
-            type: "input",
-            message: "What is the ID of the product they would like to buy? "
+        inquirer.prompt([{
 
-        },
+                name: "itemNeeded",
+                type: "input",
+                message: "What is the ID of the product they would like to buy? "
 
-        {
-            name: "quantityNeeded",
-            type: "input",
-            message: "How many units Would you like to buy? "
+            },
 
-        }
+            {
+                name: "quantityNeeded",
+                type: "input",
+                message: "How many units Would you like to buy? "
 
-    ]).then(function(answer) {
-            var query = 'SELECT * FROM products where item_id=?';
-            connection.query(query, [answer.itemNeeded], function(err, res) {
-                    if (err) throw err;
-                    // (answer.itemNeeded != res[0].item_id) {
-                    //     Console.log("Item does not exist! Pleease refer to the available items!"
-                    //     }
+            }
 
-                    // });
+        ]).then(function(answer) {
+            var chosenItem;
+            for (var i = 0; i < results.length; i++) {
+                if (results[i].item_id === answer.itemNeeded) {
+                    chosenItem = results[i];
 
-                console.log("Position: " +res[0].position+ "\nItem ID: " +res[0].item_id+ "\nProduct Name: " +res[0].product_name+ "\nDepartment Name: " +res[0].department_name+ "\nPrice: " +res[0].price+ "\nStock Quantity: " +res[0].stock_quantity+ "\n----------------------------\n");
+                    if (chosenItem.stock_quantity >= parseInt(answer.quantityNeeded)) {
+                        connection.query("UPDATE products SET ? WHERE ?", [
 
-            });
-         });
+                            {
+                                stock_quantity: stock_quantity - parseInt(answer.quantityNeeded)
+                            },
+
+                            {
+                                item_id: itemNeeded
+                            }
+
+
+                        ]); if (error) throw error;
+
+                    } else { console.log("Insufficient quantity!") };
+
+
+
+                };
+            };
+
+
+
+        });
+
+    });
+};
 
 
 };
