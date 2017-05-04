@@ -25,7 +25,7 @@ connection.query("SELECT * FROM products", function(error, result) {
 
 var purchaseWithItemID = function() {
     console.log("Inside purchaseWithItemID ")
-    connection.query("SELECT * FROM products"function(err, results) {
+    connection.query("SELECT * FROM products",function(err, results) {
         if (err) throw err;
 
         inquirer.prompt([{
@@ -45,8 +45,8 @@ var purchaseWithItemID = function() {
 
         ]).then(function(answer) {
             var chosenItem;
-            for (var i = 0; i < results.length; i++) {
-                if (results[i].item_id === answer.itemNeeded) {
+             
+                if (results[0].item_id === answer.itemNeeded) {
                     chosenItem = results[i];
 
                     if (chosenItem.stock_quantity >= parseInt(answer.quantityNeeded)) {
@@ -61,10 +61,13 @@ var purchaseWithItemID = function() {
                             }
 
 
-                        ]); if (error) throw error;
+                        ], function(error){
+                        	if (error) throw error;
 
-                    } else { console.log("Insufficient quantity!") };
+                    	else { console.log("Insufficient quantity!") };
 
+                        });
+                        
 
 
                 };
@@ -77,8 +80,6 @@ var purchaseWithItemID = function() {
     });
 };
 
-
-};
 
 
 
